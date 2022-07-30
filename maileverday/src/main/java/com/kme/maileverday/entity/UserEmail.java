@@ -5,8 +5,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table (name = "userEmail", indexes = @Index(name = "idx_userEmail_email", columnList = "email"))
-public class userEmail {
+@Table (indexes = @Index(name = "idx_userEmail_email", columnList = "email"))
+public class UserEmail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
