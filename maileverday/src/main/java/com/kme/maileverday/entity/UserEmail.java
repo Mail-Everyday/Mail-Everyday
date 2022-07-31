@@ -1,9 +1,17 @@
 package com.kme.maileverday.entity;
 
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Setter
+@Getter
+@NoArgsConstructor
 @Entity
 @Table (indexes = @Index(name = "idx_userEmail_email", columnList = "email"))
 public class UserEmail {
@@ -31,4 +39,16 @@ public class UserEmail {
 
     @Column
     private String lastMailTime;
+
+    @Builder
+    public UserEmail(String email, String name, LocalDateTime registrationDate, LocalDateTime lastLoginDate,
+                     String accessToken, String refreshToken, String lastMailTime) {
+        this.email = email;
+        this.name = name;
+        this.registrationDate = registrationDate;
+        this.lastLoginDate = lastLoginDate;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.lastMailTime = lastMailTime;
+    }
 }
