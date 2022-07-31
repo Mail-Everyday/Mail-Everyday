@@ -3,6 +3,8 @@ package com.kme.maileverday.service;
 import com.kme.maileverday.entity.UserEmail;
 import com.kme.maileverday.entity.UserEmailRepository;
 import com.kme.maileverday.utility.EnvironmentKey;
+import com.kme.maileverday.utility.exception.CustomException;
+import com.kme.maileverday.utility.exception.ErrorMessage;
 import com.kme.maileverday.web.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +29,6 @@ public class GoogleUserService {
     public String login(String authCode) throws Exception {
         OAuthTokenResponseGoogleDto token = getToken(authCode);
         UserInfoResponseGoogleDto userInfo = getUserInfo(token.getAccess_token());
-        System.out.println(token.getAccess_token()); // Debug
 
         UserEmail user = userEmailRepository.findByEmail(userInfo.getEmail());
         if (user != null) {
@@ -52,7 +53,7 @@ public class GoogleUserService {
         return user.getName();
     }
 
-    private OAuthTokenResponseGoogleDto getToken(String authCode) throws Exception{
+    private OAuthTokenResponseGoogleDto getToken(String authCode) throws CustomException{
         final String url = "https://oauth2.googleapis.com/token";
 
         HttpHeaders headers = new HttpHeaders();
@@ -74,7 +75,7 @@ public class GoogleUserService {
             return response.getBody();
         }
         else {
-            throw new Exception();
+            throw new CustomException(ErrorMessage.NEED_AUTH_PERMISSION);
         }
     }
 
@@ -123,6 +124,7 @@ public class GoogleUserService {
         String lastMsgId = msgList.getMessages().get(0).getId();
         if (lastMsgId == null) {
             // 메일함에 메일이 하나도 없을때 예외처리
+            return LocalDateTime.now().toString();
         }
         MessageResponseGoogleDto msg = getMessageResponse(accessToken, lastMsgId);
         List<MessageHeaderGoogleDto> msgHeader = msg.getPayload().getHeaders();
