@@ -5,6 +5,7 @@ import com.kme.maileverday.entity.UserEmailRepository;
 import com.kme.maileverday.utility.EnvironmentKey;
 import com.kme.maileverday.web.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +13,15 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class GoogleUserService {
     private final UserEmailRepository userEmailRepository;
+
+    @Value("${GOOGLE-API-DATETIME-KEY-NAME}")
+    private String dateKeyName;
 
     @Transactional
     public String login(String authCode) throws Exception {
@@ -82,7 +87,7 @@ public class GoogleUserService {
                 .name(profileInfo.getNames().get(0).getDisplayName())
                 .registrationDate(LocalDateTime.now())
                 .lastLoginDate(LocalDateTime.now())
-                .lastMailTime(LocalDateTime.now().toString())
+                .lastMailTime(getLastMailTime(accessToken))
                 .build();
     }
 
@@ -109,6 +114,53 @@ public class GoogleUserService {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<MailInfoResponseGoogleDto> response = restTemplate.exchange(url, HttpMethod.GET,
                 entity, MailInfoResponseGoogleDto.class);
+        return response.getBody();
+    }
+
+    private String getLastMailTime(String accessToken) {
+        MessageListResponseGoogleDto msgList = getMessageList(accessToken, null);
+
+        String lastMsgId = msgList.getMessages().get(0).getId();
+        if (lastMsgId == null) {
+            // 메일함에 메일이 하나도 없을때 예외처리
+        }
+        MessageResponseGoogleDto msg = getMessageResponse(accessToken, lastMsgId);
+        List<MessageHeaderGoogleDto> msgHeader = msg.getPayload().getHeaders();
+        for (int i = 0; i < msgHeader.size(); i++) {
+            if (msgHeader.get(i).getName().equals(dateKeyName)) {
+                return msgHeader.get(i).getValue();
+            }
+        }
+        return LocalDateTime.now().toString();
+    }
+
+    private MessageListResponseGoogleDto getMessageList(String accessToken, String pageToken) {
+        String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages";
+
+        if (pageToken != null) {
+            url += "?pageToken=" + pageToken;
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity entity = new HttpEntity(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<MessageListResponseGoogleDto> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, MessageListResponseGoogleDto.class);
+        return response.getBody();
+    }
+
+    private MessageResponseGoogleDto getMessageResponse(String accessToken, String msgId) {
+        final String url = "https://gmail.googleapis.com/gmail/v1/users/me/messages/" + msgId;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        HttpEntity entity = new HttpEntity(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<MessageResponseGoogleDto> response = restTemplate.exchange(url, HttpMethod.GET,
+                entity, MessageResponseGoogleDto.class);
         return response.getBody();
     }
 }

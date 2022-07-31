@@ -3,7 +3,7 @@ package com.kme.maileverday.web.dto;
 import lombok.Getter;
 
 @Getter
-public class ProfileInfoNamesDto {
+public class ProfileInfoNamesGoogleDto {
     private String displayName;
     private String familyName;
     private String givenName;

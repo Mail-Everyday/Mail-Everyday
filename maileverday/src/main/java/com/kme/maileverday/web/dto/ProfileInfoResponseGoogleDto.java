@@ -6,5 +6,5 @@ import java.util.List;
 
 @Getter
 public class ProfileInfoResponseGoogleDto {
-    List<ProfileInfoNamesDto> names;
+    private List<ProfileInfoNamesGoogleDto> names;
 }
