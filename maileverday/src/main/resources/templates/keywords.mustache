@@ -1,0 +1,28 @@
+{{>layout/header}}
+    <h1>Keyword List</h1>
+    <a href="/" class="btn btn-primary" role="button">Home</a>
+    <a href="/" class="btn btn-primary" role="button">Add</a>
+    <table class="table table-horizontal table-bordered">
+        <thead class="thead-strong"></thead>
+        <tr>
+            <th>No.</th>
+            <th>Keyword</th>
+            <th>Message</th>
+            <th>Active</th>
+            <th>Vacation Mode</th>
+            <th>Remove</th>
+        </tr>
+        <tbody id="tbody">
+        {{#keywords}}
+        <tr>
+            <td>{{id}}</td>
+            <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
+            <td>{{message}}</td>
+            <td>{{active}}</td>
+            <td>{{vacation}}</td>
+            <td><a href="/">{{delete}}</a></td>
+        </tr>
+        {{/keywords}}
+        </tbody>
+    </table>
+{{>layout/footer}}
