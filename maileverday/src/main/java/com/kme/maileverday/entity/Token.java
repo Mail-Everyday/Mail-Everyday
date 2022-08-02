@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 @Getter
@@ -60,8 +61,6 @@ public class Token {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
 
-        RestTemplate restTemplate = new RestTemplate();
-
         MultiValueMap<String, String> map = OAuthTokenRequestGoogleDto.builder()
                 .clientId(EnvironmentKey.getGoogleApiKey())
                 .clientSecret(EnvironmentKey.getGoogleApiSecret())
@@ -71,15 +70,19 @@ public class Token {
                 .build().toEntity();
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        ResponseEntity<OAuthTokenResponseGoogleDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, OAuthTokenResponseGoogleDto.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<OAuthTokenResponseGoogleDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, OAuthTokenResponseGoogleDto.class);
             return Token.builder()
                     .access_token(response.getBody().getAccess_token())
                     .expires_in(response.getBody().getExpires_in())
                     .build();
-        }
-        else {
-            throw new CustomException(ErrorMessage.REFRESH_TOKEN_INVALID);
+        } catch (HttpClientErrorException e) {
+            // 리프레쉬 토큰이 유효하지 않음
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                throw new CustomException(ErrorMessage.REFRESH_TOKEN_INVALID);
+            }
+            throw e;
         }
     }
 
@@ -91,16 +94,19 @@ public class Token {
         headers.add("Authorization", "Bearer " + access_token);
         HttpEntity entity = new HttpEntity(headers);
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        if (response.getStatusCode() == HttpStatus.OK) {
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
             return ;
-        }
-        else {
-            Token newToken = getTokenByRefreshToken();
-            access_token = newToken.getAccess_token();
-            expires_in = newToken.getExpires_in();
-            newToken = null;
+        } catch (HttpClientErrorException e) {
+            // 토큰 만료시 Google 서버에서 [400, Bad Request]
+            if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                Token newToken = getTokenByRefreshToken();
+                access_token = newToken.getAccess_token();
+                expires_in = newToken.getExpires_in();
+                newToken = null;
+                System.out.println("refresh_token used");
+            }
         }
     }
 
