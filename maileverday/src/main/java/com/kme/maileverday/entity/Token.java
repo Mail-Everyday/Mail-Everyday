@@ -105,7 +105,6 @@ public class Token {
                 access_token = newToken.getAccess_token();
                 expires_in = newToken.getExpires_in();
                 newToken = null;
-                System.out.println("refresh_token used");
             }
         }
     }
