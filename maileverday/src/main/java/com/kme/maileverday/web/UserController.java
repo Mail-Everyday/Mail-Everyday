@@ -30,7 +30,7 @@ public class UserController {
                 String userName = googleUserService.login(authCode);
                 session.setAttribute("userName", userName);
             } catch (Exception e) {
-                e.printStackTrace();
+                return "loginalert";
             }
             return "redirect:"
                     + "/";
