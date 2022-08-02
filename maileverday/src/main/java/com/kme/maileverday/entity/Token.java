@@ -54,9 +54,54 @@ public class Token {
         }
     }
 
+    private Token getTokenByRefreshToken() throws CustomException {
+        final String url = "https://oauth2.googleapis.com/token";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        MultiValueMap<String, String> map = OAuthTokenRequestGoogleDto.builder()
+                .clientId(EnvironmentKey.getGoogleApiKey())
+                .clientSecret(EnvironmentKey.getGoogleApiSecret())
+                .redirectUri(EnvironmentKey.getGoogleApiRedirectUri())
+                .grantType("refresh_token")
+                .refreshToken(refresh_token)
+                .build().toEntity();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        ResponseEntity<OAuthTokenResponseGoogleDto> response = restTemplate.exchange(url, HttpMethod.POST, entity, OAuthTokenResponseGoogleDto.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return Token.builder()
+                    .access_token(response.getBody().getAccess_token())
+                    .expires_in(response.getBody().getExpires_in())
+                    .build();
+        }
+        else {
+            throw new CustomException(ErrorMessage.REFRESH_TOKEN_INVALID);
+        }
+    }
+
     // 토큰이 만료되었으면 refresh_token을 이용하여 갱신
     public void updateIfExpired() throws CustomException {
         final String url = "https://www.googleapis.com/oauth2/v2/tokeninfo";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + access_token);
+        HttpEntity entity = new HttpEntity(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            return ;
+        }
+        else {
+            Token newToken = getTokenByRefreshToken();
+            access_token = newToken.getAccess_token();
+            expires_in = newToken.getExpires_in();
+            newToken = null;
+        }
     }
 
     public <T> T callApi(final String url, Class<T> responseDto) {
