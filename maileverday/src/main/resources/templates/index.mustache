@@ -1,0 +1,19 @@
+{{>layout/header}}
+<h1>maileveryday Ver.1</h1>
+<div class="col-md-12">
+    <!-- 로그인 기능 영역 -->
+    <div class="row">
+        <div class="col-md-6">
+            {{#userName}}
+                Logged in as: <span id="user">{{userName}}</span>
+                <a href="/logout" class="btn btn-info active" role="button">Logout</a>
+                <a href="/keywords" class="btn btn-primary" role="button">Keywords</a>
+            {{/userName}}
+            {{^userName}}
+                <a href="/login/google" role="button" class="btn btn-primary">Login</a>
+            {{/userName}}
+        </div>
+    </div>
+</div>
+<br>
+{{>layout/footer}}

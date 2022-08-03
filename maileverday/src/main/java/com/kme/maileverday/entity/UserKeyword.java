@@ -4,14 +4,14 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class userKeyword {
+public class UserKeyword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
     @JoinColumn(name = "userEmail", referencedColumnName = "email")
-    private userEmail email;
+    private UserEmail email;
 
     @Column(nullable = false)
     private String keyword;

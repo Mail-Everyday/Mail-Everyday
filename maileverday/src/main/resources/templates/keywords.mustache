@@ -1,0 +1,44 @@
+{{>layout/header}}
+    <h1>Keyword List</h1>
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-6">
+                <a href="/" class="btn btn-outline-info" role="button">Home</a>
+                <a href="/" class="btn btn-outline-primary" role="button">Add</a>
+            </div>
+        </div>
+    </div>
+    <br>
+    <table class="table">
+        <thead class="thead-strong"></thead>
+        <tr class="table-pink">
+            <th>No.</th>
+            <th>Keyword</th>
+            <th>Message</th>
+            <th>Active</th>
+            <th>Vacation Mode</th>
+            <th>Remove</th>
+        </tr>
+        <tbody id="tbody">
+        <!-- TEST -->
+        <tr>
+            <td>1</td>
+            <td>recruit</td>
+            <td>thanks, I'll contact you soon!</td>
+            <td>toggle</td>
+            <td>toggle</td>
+            <td>remove</td>
+        </tr>
+        {{#keywords}}
+        <tr>
+            <td>{{id}}</td>
+            <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
+            <td>{{message}}</td>
+            <td>{{active}}</td>
+            <td>{{vacation}}</td>
+            <td><a href="/">{{delete}}</a></td>
+        </tr>
+        {{/keywords}}
+        </tbody>
+    </table>
+{{>layout/footer}}
