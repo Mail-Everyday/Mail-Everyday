@@ -21,7 +21,7 @@
 ## 기술 스택
 * 스프링부트 2.7.2 (Gradle Project) 
 * Openjdk8
-* AWS RDS Database (MaridDB)
+* AWS RDS Database (MariaDB)
 
 ## 개발 환경
 * IntelliJ Ultimate Edition 2022.1.2
