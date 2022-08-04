@@ -1,12 +1,17 @@
 package com.kme.maileverday.entity;
 
 
+import lombok.Builder;
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Getter
+@Builder
 @Entity
 @Table (name = "userEmail", indexes = @Index(name = "idx_userEmail_email", columnList = "email"))
-public class userEmail {
+public class UserEmail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
