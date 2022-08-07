@@ -19,9 +19,14 @@ var main = {
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(function () {
-            alert('Success');
-            location.href = '/keywords';
+        }).done(function (response) {
+            if (response.SUCCESS === "Y") {
+                alert('Success');
+                location.href = '/keywords';
+            }
+            else {
+                alert(JSON.stringify(response));
+            }
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
