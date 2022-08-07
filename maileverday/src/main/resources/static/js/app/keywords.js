@@ -20,7 +20,7 @@ var main = {
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
         }).done(function (response) {
-            if (response.SUCCESS === "Y") {
+            if (response.success === true) {
                 alert('Success');
                 location.href = '/keywords';
             }

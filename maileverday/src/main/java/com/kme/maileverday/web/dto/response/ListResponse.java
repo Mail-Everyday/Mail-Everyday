@@ -11,10 +11,10 @@ public class ListResponse<T> extends CommonResponse{
     private List<T> dataList;
 
     @Builder
-    ListResponse(List<T> dataList, int httpStatusCode, boolean success, ErrorMessage message) {
+    ListResponse(List<T> dataList, int httpStatusCode, boolean success, String message) {
         this.dataList = dataList;
         this.code = httpStatusCode;
         this.success = success;
-        this.message = message.getDesc();
+        this.message = message;
     }
 }

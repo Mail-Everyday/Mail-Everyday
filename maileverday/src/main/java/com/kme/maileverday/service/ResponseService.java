@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 public class ResponseService {
-    public <T> SingleResponse<T> getSingleResponse(T data, int httpStatusCode, boolean success, ErrorMessage message) {
+    public <T> SingleResponse<T> getSingleResponse(T data, int httpStatusCode, boolean success, String message) {
         return SingleResponse.<T>builder()
                 .data(data)
                 .httpStatusCode(httpStatusCode)
@@ -18,7 +18,7 @@ public class ResponseService {
                 .build();
     }
 
-    public <T> ListResponse<T> getListResponse(List<T> dataList, int httpStatusCode, boolean success, ErrorMessage message) {
+    public <T> ListResponse<T> getListResponse(List<T> dataList, int httpStatusCode, boolean success, String message) {
         return ListResponse.<T>builder()
                 .dataList(dataList)
                 .httpStatusCode(httpStatusCode)
