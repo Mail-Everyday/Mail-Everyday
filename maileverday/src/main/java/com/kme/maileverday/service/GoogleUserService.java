@@ -3,7 +3,7 @@ package com.kme.maileverday.service;
 import com.kme.maileverday.entity.Token;
 import com.kme.maileverday.entity.UserEmail;
 import com.kme.maileverday.entity.UserEmailRepository;
-import com.kme.maileverday.web.dto.*;
+import com.kme.maileverday.web.dto.googleLogin.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

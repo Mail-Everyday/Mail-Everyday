@@ -2,7 +2,7 @@ package com.kme.maileverday.web;
 
 import com.kme.maileverday.service.GoogleUserService;
 import com.kme.maileverday.utility.EnvironmentKey;
-import com.kme.maileverday.web.dto.LoginServiceResponseDto;
+import com.kme.maileverday.web.dto.googleLogin.LoginServiceResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

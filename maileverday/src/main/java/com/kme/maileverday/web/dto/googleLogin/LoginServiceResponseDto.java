@@ -1,4 +1,4 @@
-package com.kme.maileverday.web.dto;
+package com.kme.maileverday.web.dto.googleLogin;
 
 import lombok.Builder;
 import lombok.Getter;
