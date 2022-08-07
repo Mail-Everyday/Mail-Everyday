@@ -21,7 +21,7 @@ public class GoogleUserService {
     private String dateKeyName;
 
     @Transactional
-    public String login(String authCode) throws Exception {
+    public LoginServiceResponseDto login(String authCode) throws Exception {
         Token token = Token.getToken(authCode);
         UserInfoResponseGoogleDto userInfo = getUserInfo(token);
 
@@ -45,7 +45,10 @@ public class GoogleUserService {
                     .build();
             userEmailRepository.save(user);
         }
-        return user.getName();
+        return LoginServiceResponseDto.builder()
+                .userEmail(userInfo.getEmail())
+                .userName(userInfo.getName())
+                .build();
     }
 
     private UserInfoResponseGoogleDto getUserInfo(Token token) {

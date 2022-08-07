@@ -2,6 +2,7 @@ package com.kme.maileverday.web;
 
 import com.kme.maileverday.service.GoogleUserService;
 import com.kme.maileverday.utility.EnvironmentKey;
+import com.kme.maileverday.web.dto.LoginServiceResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,8 +28,9 @@ public class UserController {
         }
         else {
             try {
-                String userName = googleUserService.login(authCode);
-                session.setAttribute("userName", userName);
+                LoginServiceResponseDto userInfo = googleUserService.login(authCode);
+                session.setAttribute("userEmail", userInfo.getUserEmail());
+                session.setAttribute("userName", userInfo.getUserName());
             } catch (Exception e) {
                 return "loginalert";
             }
