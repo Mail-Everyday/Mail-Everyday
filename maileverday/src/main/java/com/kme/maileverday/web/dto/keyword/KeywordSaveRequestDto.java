@@ -2,6 +2,7 @@ package com.kme.maileverday.web.dto.keyword;
 
 import com.kme.maileverday.entity.UserEmail;
 import com.kme.maileverday.entity.UserKeyword;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +22,13 @@ public class KeywordSaveRequestDto {
 
     @Setter
     private LocalDateTime registrationDate;
+
+    @Builder
+    KeywordSaveRequestDto(String keyword, String userEmail, String vacationMessage) {
+        this.keyword = keyword;
+        this.userEmail = userEmail;
+        this.vacationMessage = vacationMessage;
+    }
 
     public UserKeyword toEntity(UserEmail userEmail) {
         return UserKeyword.builder()
