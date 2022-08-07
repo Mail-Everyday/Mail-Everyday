@@ -24,4 +24,15 @@ public class IndexController {
             return "permissionalert";
         }
     }
+
+    @GetMapping("/keywords/save")
+    public String keywordsSave(HttpSession session) {
+        if (session.getAttribute("userEmail") != null) {
+            return "keywords-save";
+        }
+        else {
+            // 잘못된 접근 (로그인이 되지 않은 상태에서 접속 시도)
+            return "permissionalert";
+        }
+    }
 }
