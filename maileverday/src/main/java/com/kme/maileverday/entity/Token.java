@@ -87,7 +87,7 @@ public class Token {
     }
 
     // 토큰이 만료되었으면 refresh_token을 이용하여 갱신
-    public void updateIfExpired() throws CustomException {
+    public boolean updateIfExpired() throws CustomException {
         final String url = "https://www.googleapis.com/oauth2/v2/tokeninfo";
 
         HttpHeaders headers = new HttpHeaders();
@@ -97,7 +97,6 @@ public class Token {
         try {
             RestTemplate restTemplate = new RestTemplate();
             ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            return ;
         } catch (HttpClientErrorException e) {
             // 토큰 만료시 Google 서버에서 [400, Bad Request]
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
@@ -105,8 +104,10 @@ public class Token {
                 access_token = newToken.getAccess_token();
                 expires_in = newToken.getExpires_in();
                 newToken = null;
+                return true;
             }
         }
+        return false;
     }
 
     public <T> T callApi(final String url, Class<T> responseDto) {
