@@ -21,6 +21,7 @@
         </tr>
         <tbody id="tbody">
         <!-- TEST -->
+        <!--
         <tr>
             <td>1</td>
             <td>recruit</td>
@@ -37,17 +38,20 @@
             <td class="text-center"><input type="checkbox" checked data-toggle="toggle" data-size="sm"></td>
             <td><a href="/keywords/delete/2">remove</a></td>
         </tr>
+        -->
         <!-- TEST END -->
-        {{#keywords}}
-        <tr>
-            <td>{{id}}</td>
-            <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
-            <td>{{message}}</td>
-            <td>{{active}}</td>
-            <td>{{vacation}}</td>
-            <td><a href="/">{{delete}}</a></td>
-        </tr>
-        {{/keywords}}
+        {{#ListResponse.success}}
+            {{#ListResponse.dataList}}
+                <tr>
+                    <td>{{id}}</td>
+                    <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
+                    <td>{{vacationResponse}}</td>
+                    <td>{{active}}</td>
+                    <td>{{vacation}}</td>
+                    <td>remove</td>
+                </tr>
+            {{/ListResponse.dataList}}
+        {{/ListResponse.success}}
         </tbody>
     </table>
 {{>layout/footer}}
