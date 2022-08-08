@@ -1,7 +1,15 @@
 {{>layout/header}}
+{{^userEmail}}
+    <script>
+        var msg = "USER_EMAIL_NOT_FOUND"
+        var url = "/"
+        alert(msg);
+        location.href = url;
+    </script>
+{{/userEmail}}
 
+{{#userEmail}}
 <h1>Add Keyword</h1>
-
 <div class="col-md-12">
     <div class="col-md-4">
         <form>
@@ -24,4 +32,6 @@
         <button type="button" class="btn btn-primary" id="btn-save">OK</button>
     </div>
 </div>
+{{/userEmail}}
+
 {{>layout/footer}}

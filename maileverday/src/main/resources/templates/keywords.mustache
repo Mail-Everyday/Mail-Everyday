@@ -40,18 +40,24 @@
         </tr>
         -->
         <!-- TEST END -->
-        {{#ListResponse.success}}
-            {{#ListResponse.dataList}}
-                <tr>
-                    <td>{{id}}</td>
-                    <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
-                    <td>{{vacationResponse}}</td>
-                    <td>{{active}}</td>
-                    <td>{{vacation}}</td>
-                    <td>remove</td>
-                </tr>
-            {{/ListResponse.dataList}}
-        {{/ListResponse.success}}
+        {{#keywords}}
+            <tr>
+                <td>{{id}}</td>
+                <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
+                <td>{{vacationResponse}}</td>
+                <td>{{active}}</td>
+                <td>{{vacation}}</td>
+                <td>remove</td>
+            </tr>
+        {{/keywords}}
+        {{#error}}
+            <script>
+                var msg = "{{error}}";
+                var url = "/";
+                alert(msg);
+                location.href = url;
+            </script>
+        {{/error}}
         </tbody>
     </table>
 {{>layout/footer}}
