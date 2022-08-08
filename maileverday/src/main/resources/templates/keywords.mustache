@@ -34,8 +34,8 @@
             <td>2</td>
             <td>notice</td>
             <td>I got it!</td>
-            <td><input type="checkbox" checked data-toggle="toggle" data-size="sm"></td>
-            <td class="text-center"><input type="checkbox" checked data-toggle="toggle" data-size="sm"></td>
+            <td><input type="checkbox" checked data-toggle="toggle" data-size="sm" value="false"></td>
+            <td class="text-center"><input type="checkbox" data-toggle="toggle" data-size="sm" value="true"></td>
             <td><a href="/keywords/delete/2">remove</a></td>
         </tr>
         -->
@@ -45,8 +45,8 @@
                 <td>{{id}}</td>
                 <td><a href="/keywords/update/{{id}}">{{keyword}}</a></td>
                 <td>{{vacationResponse}}</td>
-                <td>{{active}}</td>
-                <td>{{vacation}}</td>
+                <td><input type="checkbox" class="switch_checkbox" data-toggle="toggle" data-size="sm" value="{{active}}"></td>
+                <td class="text-center"><input type="checkbox" class="switch_checkbox" data-toggle="toggle" data-size="sm" value="{{vacation}}"></td>
                 <td>remove</td>
             </tr>
         {{/keywords}}
@@ -60,4 +60,13 @@
         {{/error}}
         </tbody>
     </table>
+<script>
+    var checkbox = document.getElementsByClassName("switch_checkbox");
+
+    for (var i = 0; i < checkbox.length; i++) {
+        if (checkbox[i].value === "true") {
+            checkbox[i].checked = true;
+        }
+    }
+</script>
 {{>layout/footer}}
