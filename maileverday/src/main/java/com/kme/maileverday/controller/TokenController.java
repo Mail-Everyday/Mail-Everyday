@@ -1,20 +1,29 @@
 package com.kme.maileverday.controller;
 
-import com.kme.maileverday.request.SignUp;
+import com.kme.maileverday.entity.Token;
+import com.kme.maileverday.entity.UserInfo;
+import com.kme.maileverday.service.TokenService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class TokenController {
 
-    @RequestMapping("https://accounts.google.com/o/oauth2/v2/auth?client_id=705749547884-7jusq6923nlqt9bos5h8uaiivj9tlj03.apps.googleusercontent.com&redirect_uri=http://localhost:8080&response_type=code&scope=https://mail.google.com/ https://www.googleapis.com/auth/userinfo.profile&access_type=offline")
-    public String createCode(HttpServletRequest request){
+    @Autowired
+    private TokenService tokenService;
 
-        String code = request.getParameter("code");
-        System.out.println(code);
-        return "index";
+
+
+    @GetMapping("/login")
+    @ResponseBody
+    public UserInfo createCode(@RequestParam(value = "code", required = false) String code){
+        Token tokeninfo = tokenService.createToken(code);
+        UserInfo userInfo = tokenService.getUserInfo(tokeninfo);
+        return userInfo;
     }
 
 }

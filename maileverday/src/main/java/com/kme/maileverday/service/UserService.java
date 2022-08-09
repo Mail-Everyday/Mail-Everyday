@@ -19,7 +19,7 @@ public class UserService {
 
     public void join(SignUp signUp){
         validateDuplicateUser(signUp);
-        tokenController.createCode();
+
     }
 
     private void validateDuplicateUser(SignUp signUp){
