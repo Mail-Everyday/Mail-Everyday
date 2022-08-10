@@ -5,7 +5,7 @@ import com.kme.maileverday.entity.UserEmail;
 import com.kme.maileverday.entity.UserEmailRepository;
 import com.kme.maileverday.entity.UserKeyword;
 import com.kme.maileverday.entity.UserKeywordRepository;
-import com.kme.maileverday.utility.exception.ErrorMessage;
+import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.keyword.KeywordSaveRequestDto;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -132,7 +132,7 @@ public class KeywordControllerTest {
         // then
         assertThat(jsonObject.get("success")).isEqualTo(false);
         assertThat(jsonObject.get("code")).isEqualTo(403L);
-        assertThat(jsonObject.get("message")).isEqualTo(ErrorMessage.USER_EMAIL_NOT_FOUND.getDesc());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.USER_EMAIL_NOT_FOUND.getDesc());
 
         List<UserKeyword> all = keywordRepository.findAll();
         assertThat(all.size()).isEqualTo(0);

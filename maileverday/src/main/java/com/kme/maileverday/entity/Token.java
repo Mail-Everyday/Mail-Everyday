@@ -2,7 +2,7 @@ package com.kme.maileverday.entity;
 
 import com.kme.maileverday.utility.EnvironmentKey;
 import com.kme.maileverday.utility.exception.CustomException;
-import com.kme.maileverday.utility.exception.ErrorMessage;
+import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.googleLogin.OAuthTokenRequestGoogleDto;
 import com.kme.maileverday.web.dto.googleLogin.OAuthTokenResponseGoogleDto;
 import lombok.Builder;
@@ -51,7 +51,7 @@ public class Token {
                     .build();
         }
         else {
-            throw new CustomException(ErrorMessage.NEED_AUTH_PERMISSION);
+            throw new CustomException(CustomMessage.NEED_AUTH_PERMISSION);
         }
     }
 
@@ -80,7 +80,7 @@ public class Token {
         } catch (HttpClientErrorException e) {
             // 리프레쉬 토큰이 유효하지 않음
             if (e.getStatusCode() == HttpStatus.BAD_REQUEST) {
-                throw new CustomException(ErrorMessage.REFRESH_TOKEN_INVALID);
+                throw new CustomException(CustomMessage.REFRESH_TOKEN_INVALID);
             }
             throw e;
         }

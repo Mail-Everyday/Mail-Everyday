@@ -1,6 +1,5 @@
 package com.kme.maileverday.web.dto.response;
 
-import com.kme.maileverday.utility.exception.ErrorMessage;
 import lombok.Builder;
 import lombok.Getter;
 

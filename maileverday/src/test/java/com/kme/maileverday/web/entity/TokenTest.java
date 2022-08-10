@@ -2,7 +2,7 @@ package com.kme.maileverday.web.entity;
 
 import com.kme.maileverday.entity.Token;
 import com.kme.maileverday.utility.exception.CustomException;
-import com.kme.maileverday.utility.exception.ErrorMessage;
+import com.kme.maileverday.utility.exception.CustomMessage;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,7 +29,7 @@ public class TokenTest {
         try {
             token.updateIfExpired();
         } catch (CustomException e) {
-            assertThat(e.getCode()).isEqualTo(ErrorMessage.REFRESH_TOKEN_INVALID.getCode());
+            assertThat(e.getCode()).isEqualTo(CustomMessage.REFRESH_TOKEN_INVALID.getCode());
             assertThat(token.getAccess_token()).isEqualTo(testAccessToken);
             assertThat(token.getRefresh_token()).isEqualTo(testRefreshToken);
             return ;

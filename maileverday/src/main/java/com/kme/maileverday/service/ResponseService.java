@@ -1,6 +1,5 @@
 package com.kme.maileverday.service;
 
-import com.kme.maileverday.utility.exception.ErrorMessage;
 import com.kme.maileverday.web.dto.response.ListResponse;
 import com.kme.maileverday.web.dto.response.SingleResponse;
 import org.springframework.stereotype.Service;

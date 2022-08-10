@@ -4,6 +4,10 @@ var main = {
         $('#btn-save').on('click', function () {
             _this.save();
         });
+
+        $('.btn-delete').on('click', function (eventObject) {
+            _this.delete(eventObject);
+        });
     },
 
     save: function () {
@@ -29,6 +33,26 @@ var main = {
             }
         }).fail(function (error) {
             alert(JSON.stringify(error));
+        });
+    },
+
+    delete : function (eventObject) {
+        var id = eventObject.target.value;
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/v1/keywords/' + id,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function (response) {
+            if (response.success === true) {alert('Delete success');}
+            else {alert(JSON.stringify(response));}
+            location.href = '/keywords';
+        }).fail(function (request, error) {
+            alert("fail");
+            alert("code:"+request.status+"\n"
+            +"message:"+request.responseText+"\n"
+            +"error:"+error);
         });
     }
 };
