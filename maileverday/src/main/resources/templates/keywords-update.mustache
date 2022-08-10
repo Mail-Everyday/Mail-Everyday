@@ -1,0 +1,36 @@
+{{>layout/header}}
+{{#message}}
+    <script>
+        var msg = "{{message}}";
+        var url = "/keywords";
+        alert(msg);
+        location.href = url;
+    </script>
+{{/message}}
+
+{{#keyword}}
+    <h1>Update Keyword</h1>
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <form>
+                <div class="form-group">
+                    <label for="keyword">Keyword</label>
+                    <input type="text" class="form-control" id="keyword" value="{{keyword}}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="author">Author</label>
+                    <input type="text" class="form-control" id="author" value="{{userEmail}}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="vacationMessage">Response message</label>
+                    <textarea class="form-control" id="vacationMessage" placeholder="Enter response message when vacation mode is active (optional)">{{vacationResponse}}</textarea>
+                </div>
+            </form>
+            <a href="/keywords" role="button" class="btn btn-secondary">Cancel</a>
+            <button type="button" class="btn btn-primary" id="btn-update">OK</button>
+        </div>
+    </div>
+{{/keyword}}
+{{>layout/footer}}

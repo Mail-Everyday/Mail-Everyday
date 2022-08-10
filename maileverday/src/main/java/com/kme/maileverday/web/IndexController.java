@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpSession;
 
@@ -34,5 +35,16 @@ public class IndexController {
     @GetMapping("/keywords/save")
     public String keywordsSave() {
         return "keywords-save";
+    }
+
+    @GetMapping("/keywords/{id}")
+    public String keywordsUpdate(@PathVariable("id") Long id, Model model, HttpSession session) {
+        try {
+            model.addAttribute("keyword",
+                    keywordService.findByIdAndCheckMine(id, (String) session.getAttribute("userEmail")));
+        } catch (CustomException e) {
+            model.addAttribute("message", e.getMessage());
+        }
+        return "keywords-update";
     }
 }

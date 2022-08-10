@@ -6,6 +6,7 @@ import com.kme.maileverday.entity.UserKeyword;
 import com.kme.maileverday.entity.UserKeywordRepository;
 import com.kme.maileverday.utility.exception.CustomException;
 import com.kme.maileverday.utility.exception.CustomMessage;
+import com.kme.maileverday.web.dto.keyword.KeywordResponseDto;
 import com.kme.maileverday.web.dto.keyword.KeywordSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,8 +46,20 @@ public class KeywordService {
                 .orElseThrow(() -> new CustomException(CustomMessage.KEYWORD_NOT_FOUND));
 
         UserEmail user = userEmailRepository.findByEmail(userEmail);
-                // 다른 사용자의 키워드를 삭제하려고 접근 하였을 때
+                // 키워드의 소유자와 세션에 접속한 유저가 다르다면
                 if (keyword.getEmail() != user) {throw new CustomException(CustomMessage.FORBIDDEN);}
         userKeywordRepository.delete(keyword);
+    }
+
+    @Transactional
+    public KeywordResponseDto findByIdAndCheckMine(Long id, String email) throws CustomException {
+        UserKeyword keyword = userKeywordRepository.findById(id)
+                .orElseThrow(() -> new CustomException(CustomMessage.KEYWORD_NOT_FOUND));
+
+        // 키워드의 소유자와 세션에 접속한 유저가 다르다면
+        if(!keyword.getEmail().getEmail().equals(email)) {
+            throw new CustomException(CustomMessage.FORBIDDEN);
+        }
+        return new KeywordResponseDto(keyword);
     }
 }
