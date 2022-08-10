@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -134,5 +136,32 @@ public class KeywordControllerTest {
 
         List<UserKeyword> all = keywordRepository.findAll();
         assertThat(all.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void Keyword_조회해본다() throws Exception {
+        // given
+        String url = "http://localhost:" + port + "/keywords";
+        KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(request.getUserEmail());
+        keywordRepository.save(request.toEntity(user));
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", request.getUserEmail());
+
+        MvcResult result = mvc.perform(get(url)
+                        .session(session))
+                        .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        // then
+        assertThat(response.contains(request.getKeyword())).isEqualTo(true);
+        assertThat(response.contains(request.getVacationMessage())).isEqualTo(true);
     }
 }
