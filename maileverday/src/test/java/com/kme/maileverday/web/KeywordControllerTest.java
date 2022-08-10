@@ -27,8 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -71,7 +70,7 @@ public class KeywordControllerTest {
     }
 
     @Test
-    public void Keyword_정상적으로_등록해본다() throws Exception {
+    public void Keyword_등록테스트_정상조건() throws Exception {
         // given
         String url = "http://localhost:" + port + "/api/v1/keywords";
         String email = "TEST@TEST.COM";
@@ -96,8 +95,8 @@ public class KeywordControllerTest {
 
         // then
         assertThat(jsonObject.get("success")).isEqualTo(true);
-        assertThat(jsonObject.get("code")).isEqualTo(200L);
-        assertThat(jsonObject.get("message")).isEqualTo("OK");
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.OK.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.OK.getDesc());
 
         List<UserKeyword> all = keywordRepository.findAll();
         assertThat(all.get(0).getKeyword()).isEqualTo(keyword);
@@ -106,7 +105,7 @@ public class KeywordControllerTest {
     }
 
     @Test
-    public void Keyword_예외발생시켜서_등록해본다() throws Exception {
+    public void Keyword_등록테스트_가입되어있지않은_회원이등록하려고할때() throws Exception {
         // given
         String url = "http://localhost:" + port + "/api/v1/keywords";
         String email = "항상실패하는이메일주소 왜냐 이 이메일은 DB에 저장되어 있지가 않거든";
@@ -131,7 +130,7 @@ public class KeywordControllerTest {
 
         // then
         assertThat(jsonObject.get("success")).isEqualTo(false);
-        assertThat(jsonObject.get("code")).isEqualTo(403L);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.USER_EMAIL_NOT_FOUND.getHttpCode());
         assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.USER_EMAIL_NOT_FOUND.getDesc());
 
         List<UserKeyword> all = keywordRepository.findAll();
@@ -139,7 +138,7 @@ public class KeywordControllerTest {
     }
 
     @Test
-    public void Keyword_조회해본다() throws Exception {
+    public void Keyword_조회테스트_정상조건() throws Exception {
         // given
         String url = "http://localhost:" + port + "/keywords";
         KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
@@ -163,5 +162,109 @@ public class KeywordControllerTest {
         // then
         assertThat(response.contains(request.getKeyword())).isEqualTo(true);
         assertThat(response.contains(request.getVacationMessage())).isEqualTo(true);
+    }
+
+    @Test
+    public void Keyword_삭제테스트_정상조건() throws Exception {
+        // given
+        KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(request.getUserEmail());
+        long idx = keywordRepository.save(request.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", request.getUserEmail());
+
+        MvcResult result = mvc.perform(delete(url)
+                        .session(session))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        System.out.println(response);
+        assertThat(jsonObject.get("success")).isEqualTo(true);
+        assertThat(jsonObject.get("code")).isEqualTo(200L);
+        assertThat(jsonObject.get("message")).isEqualTo("OK");
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(0);
+    }
+
+    @Test
+    public void Keyword_삭제테스트_존재하지않는_키워드의_번호로_삭제시도해본다() throws Exception {
+        // given
+        KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("이 키워드는 삭제되지 않을거에요.")
+                .vacationMessage("왜냐하면 존재하지 않는 키워드번호를 삭제시도 해볼거거든요")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(request.getUserEmail());
+        long idx = keywordRepository.save(request.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + (idx + 1);  // idx + 1은 존재하지 않는 키워드번호
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", request.getUserEmail());
+
+        MvcResult result = mvc.perform(delete(url)
+                        .session(session))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(false);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.KEYWORD_NOT_FOUND.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.KEYWORD_NOT_FOUND.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void Keyword_삭제테스트_내_키워드가아닌_다른사람의_키워드를_삭제시도할때() throws Exception {
+        // given
+        KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(request.getUserEmail());
+        long idx = keywordRepository.save(request.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM이 아닌 악의적인 사용자!!!!!");
+
+        MvcResult result = mvc.perform(delete(url)
+                        .session(session))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        System.out.println(response);
+        assertThat(jsonObject.get("success")).isEqualTo(false);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.FORBIDDEN.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.FORBIDDEN.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
     }
 }
