@@ -32,7 +32,7 @@ public class UserController {
                 + "client_id=" + clientid + "&"
                 + "redirect_uri=" + "http://localhost:8080/login" + "&"
                 + "response_type=" + "code" + "&"
-                + "scope=" + "https://mail.google.com/ https://www.googleapis.com/auth/userinfo.profile" + "&"
+                + "scope=" + "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile" + "&"
                 + "access_type=" + "offline";
     }
 }

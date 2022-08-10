@@ -1,12 +1,13 @@
 package com.kme.maileverday.request;
 
 import com.kme.maileverday.entity.UserEmail;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Setter
+@Builder
 @Getter
 public class UserDtoReq {
 
@@ -19,5 +20,18 @@ public class UserDtoReq {
     private String lastMailTime;
 
 
+    public UserEmail toEntity(){
+        UserEmail build = UserEmail.builder()
+                .email(email)
+                .name(name)
+                .registrationDate(registrationDate)
+                .lastLoginDate(lastLoginDate)
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .lastMailTime(lastMailTime)
+                .build();
+
+        return build;
+    }
 
 }

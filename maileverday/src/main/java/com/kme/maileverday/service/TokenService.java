@@ -1,5 +1,6 @@
 package com.kme.maileverday.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kme.maileverday.entity.Token;
 import com.kme.maileverday.entity.UserEmail;
 import com.kme.maileverday.entity.UserInfo;
@@ -49,21 +50,18 @@ public class TokenService {
 
     public UserInfo getUserInfo(Token tokeninfo){
 
-        HttpHeaders headers = new HttpHeaders();
-        RestTemplate restTemplate = new RestTemplate();
-
-        headers.add("Authorization", "Bearer " + tokeninfo.getAccess_token());
-        System.out.println(headers);
         String url = "https://www.googleapis.com/oauth2/v1/userinfo";
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + tokeninfo.getAccess_token());
+
+        RestTemplate restTemplate = new RestTemplate();
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
 
 
         ResponseEntity<UserInfo> answer = restTemplate.exchange(url, HttpMethod.GET, entity, UserInfo.class);
-        System.out.println(answer.getBody().getEmailAddresses());
-        System.out.println(answer.getBody().getNames());
+
         return answer.getBody();
     }
 
