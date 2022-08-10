@@ -165,6 +165,33 @@ public class KeywordControllerTest {
     }
 
     @Test
+    public void Keyword_조회테스트_키워드를_등록한_사용자가_아닌_다른사용자가_페이지에_접근하였을때() throws Exception {
+        // given
+        String url = "http://localhost:" + port + "/keywords";
+        KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(request.getUserEmail());
+        keywordRepository.save(request.toEntity(user));
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "새로운유저, 따라서 페이지에 접근하여도 보이는 키워드가 없어야 함");
+
+        MvcResult result = mvc.perform(get(url)
+                        .session(session))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+
+        // then
+        assertThat(response.contains(request.getKeyword())).isEqualTo(false);
+        assertThat(response.contains(request.getVacationMessage())).isEqualTo(false);
+    }
+
+    @Test
     public void Keyword_삭제테스트_정상조건() throws Exception {
         // given
         KeywordSaveRequestDto request = KeywordSaveRequestDto.builder()
