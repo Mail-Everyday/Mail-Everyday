@@ -41,6 +41,18 @@ public class KeywordService {
     }
 
     @Transactional
+    public void update(Long id, KeywordSaveRequestDto requestDto, String userEmail) throws CustomException {
+        UserKeyword keyword = userKeywordRepository.findById(id)
+                .orElseThrow(() -> new CustomException(CustomMessage.KEYWORD_NOT_FOUND));
+
+        if (!userEmail.equals(keyword.getEmail().getEmail())) {
+            throw new CustomException(CustomMessage.FORBIDDEN);
+        }
+
+        keyword.update(requestDto.getVacationMessage());
+    }
+
+    @Transactional
     public void delete(Long id, String userEmail) throws CustomException {
         UserKeyword keyword = userKeywordRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomMessage.KEYWORD_NOT_FOUND));

@@ -31,7 +31,19 @@ public class KeywordController {
         }
     }
 
-    @DeleteMapping("api/v1/keywords/{id}")
+    @PutMapping("/api/v1/keywords/{id}")
+    @ResponseBody
+    public SingleResponse<String> update(@PathVariable("id") Long id, @RequestBody KeywordSaveRequestDto requestDto,
+                                         HttpSession session) {
+        try {
+            keywordService.update(id, requestDto, (String)session.getAttribute("userEmail"));
+            return responseService.getSingleResponse(null, 200, true, CustomMessage.OK.getDesc());
+        } catch (CustomException e) {
+            return responseService.getSingleResponse(null, e.getHttpCode(), false, e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/api/v1/keywords/{id}")
     @ResponseBody
     public SingleResponse<String> delete(@PathVariable("id") Long id, HttpSession session) {
         try {

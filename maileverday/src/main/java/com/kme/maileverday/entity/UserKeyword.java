@@ -48,4 +48,8 @@ public class UserKeyword {
         this.vacationResponse = vacationResponse;
         this.registrationDate = registrationDate;
     }
+
+    public void update(String vacationResponse) {
+        this.vacationResponse = vacationResponse;
+    }
 }
