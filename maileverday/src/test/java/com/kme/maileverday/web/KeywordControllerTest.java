@@ -217,7 +217,6 @@ public class KeywordControllerTest {
         JSONObject jsonObject = (JSONObject) parser.parse(response);
 
         // then
-        System.out.println(response);
         assertThat(jsonObject.get("success")).isEqualTo(true);
         assertThat(jsonObject.get("code")).isEqualTo(200L);
         assertThat(jsonObject.get("message")).isEqualTo("OK");
@@ -286,12 +285,140 @@ public class KeywordControllerTest {
         JSONObject jsonObject = (JSONObject) parser.parse(response);
 
         // then
-        System.out.println(response);
         assertThat(jsonObject.get("success")).isEqualTo(false);
         assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.FORBIDDEN.getHttpCode());
         assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.FORBIDDEN.getDesc());
 
         List<UserKeyword> all = keywordRepository.findAll();
         assertThat(all.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void Keyword_수정테스트_정상조건() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        KeywordSaveRequestDto updateRequest = KeywordSaveRequestDto.builder()
+                .vacationMessage("메시지업데이트!")
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(true);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.OK.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.OK.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(updateRequest.getVacationMessage());
+    }
+
+    @Test
+    public void Keyword_수정테스트_존재하지않는_키워드번호로_수정시도할때() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + (idx + 1);  // idx + 1은 존재하지 않는 키워드 번호
+
+        KeywordSaveRequestDto updateRequest = KeywordSaveRequestDto.builder()
+                .vacationMessage("메시지가 업데이트되면 안됩니다. 등록된 키워드 번호가 아닌 존재하지 않는 키워드 번호로 요청을 날리고 있거든요.")
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(false);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.KEYWORD_NOT_FOUND.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.KEYWORD_NOT_FOUND.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
+    }
+
+    @Test
+    public void Keyword_수정테스트_내_키워드가아닌_다른사람의_키워드를_수정시도할때() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        KeywordSaveRequestDto updateRequest = KeywordSaveRequestDto.builder()
+                .vacationMessage("메시지가 업데이트되면 안됩니다. 수정권한이 없는 아이디로 수정을 요청하고 있거든요")
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "저는 등록된 키워드의 소유자가 아닙니다.");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(false);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.FORBIDDEN.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.FORBIDDEN.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
     }
 }

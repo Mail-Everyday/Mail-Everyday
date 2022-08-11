@@ -52,11 +52,8 @@ var main = {
             if (response.success === true) {alert('Delete success');}
             else {alert(JSON.stringify(response));}
             location.href = '/keywords';
-        }).fail(function (request, error) {
-            alert("fail");
-            alert("code:"+request.status+"\n"
-            +"message:"+request.responseText+"\n"
-            +"error:"+error);
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
         });
     },
 
@@ -74,7 +71,7 @@ var main = {
             data: JSON.stringify(data)
         }).done(function (response) {
             if (response.success === true) {
-                alert('Success');
+                alert('Update success');
                 location.href = '/keywords';
             }
             else {
