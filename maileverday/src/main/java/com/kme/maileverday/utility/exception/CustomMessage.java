@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum CustomMessage {
     OK("OK", "OK", 200),
+    BAD_REQUEST("BAD_REQUEST", "잘못된 요청입니다.", 400),
     NEED_AUTH_PERMISSION ("NEED_AUTH_PERMISSION", "OAuth 권한 승인 필요", 401),
     TOKEN_INVALID ("TOKEN_INVALID", "유효하지 않은 토큰", 401),
     REFRESH_TOKEN_INVALID ("REFRESH_TOKEN_INVALID", "유효하지 않은 리프레쉬 토큰", 401),

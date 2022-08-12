@@ -54,7 +54,7 @@
                 <td>{{id}}</td>
                 <td><a href="/keywords/{{id}}">{{keyword}}</a></td>
                 <td>{{vacationResponse}}</td>
-                <td><input type="checkbox" class="switch_checkbox" data-toggle="toggle" data-size="sm" value="{{active}}"></td>
+                <td><input type="checkbox" class="switch_checkbox" data-toggle="toggle" data-size="sm" value={{active}} onchange="toggle_click({{id}}, this)"></td>
                 <td class="text-center"><input type="checkbox" class="switch_checkbox" data-toggle="toggle" data-size="sm" value="{{vacation}}"></td>
                 <td><button type="button" class="btn btn-link btn-delete" value="{{id}}">delete</button></td>
             </tr>

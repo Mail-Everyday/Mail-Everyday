@@ -8,6 +8,7 @@ import com.kme.maileverday.utility.exception.CustomException;
 import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.keyword.KeywordResponseDto;
 import com.kme.maileverday.web.dto.keyword.KeywordSaveRequestDto;
+import com.kme.maileverday.web.dto.keyword.KeywordUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +42,7 @@ public class KeywordService {
     }
 
     @Transactional
-    public void update(Long id, KeywordSaveRequestDto requestDto, String userEmail) throws CustomException {
+    public void update(Long id, KeywordUpdateRequestDto requestDto, String userEmail) throws CustomException {
         UserKeyword keyword = userKeywordRepository.findById(id)
                 .orElseThrow(() -> new CustomException(CustomMessage.KEYWORD_NOT_FOUND));
 
@@ -49,7 +50,7 @@ public class KeywordService {
             throw new CustomException(CustomMessage.FORBIDDEN);
         }
 
-        keyword.update(requestDto.getVacationMessage());
+        keyword.update(requestDto);
     }
 
     @Transactional

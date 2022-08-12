@@ -1,5 +1,8 @@
 package com.kme.maileverday.entity;
 
+import com.kme.maileverday.utility.exception.CustomException;
+import com.kme.maileverday.utility.exception.CustomMessage;
+import com.kme.maileverday.web.dto.keyword.KeywordUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,7 +52,23 @@ public class UserKeyword {
         this.registrationDate = registrationDate;
     }
 
-    public void update(String vacationResponse) {
-        this.vacationResponse = vacationResponse;
+    public void update(KeywordUpdateRequestDto requestDto) throws CustomException {
+        switch (requestDto.getUpdateRequestType()) {
+            case MESSAGE_UPDATE:
+                this.vacationResponse = requestDto.getVacationMessage();
+                break;
+
+            case ACTIVE_UPDATE:
+                this.active = requestDto.isActive();
+                break;
+
+            case VACATION_UPDATE:
+                this.vacation = requestDto.isVacation();
+                break;
+
+            case UNKNOWN_REQUEST:
+            default:
+                throw new CustomException(CustomMessage.BAD_REQUEST);
+        }
     }
 }

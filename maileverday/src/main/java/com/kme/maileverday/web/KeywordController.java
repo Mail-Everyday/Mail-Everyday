@@ -5,6 +5,7 @@ import com.kme.maileverday.service.ResponseService;
 import com.kme.maileverday.utility.exception.CustomException;
 import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.keyword.KeywordSaveRequestDto;
+import com.kme.maileverday.web.dto.keyword.KeywordUpdateRequestDto;
 import com.kme.maileverday.web.dto.response.SingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -33,7 +34,7 @@ public class KeywordController {
 
     @PutMapping("/api/v1/keywords/{id}")
     @ResponseBody
-    public SingleResponse<String> update(@PathVariable("id") Long id, @RequestBody KeywordSaveRequestDto requestDto,
+    public SingleResponse<String> update(@PathVariable("id") Long id, @RequestBody KeywordUpdateRequestDto requestDto,
                                          HttpSession session) {
         try {
             keywordService.update(id, requestDto, (String)session.getAttribute("userEmail"));

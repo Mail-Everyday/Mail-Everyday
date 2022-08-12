@@ -12,6 +12,7 @@ var main = {
         $('#btn-update').on('click', function () {
             _this.update();
         });
+
     },
 
     save: function () {
@@ -59,6 +60,7 @@ var main = {
 
     update: function () {
         var data = {
+            updateRequestType: 'MESSAGE_UPDATE',
             vacationMessage: $('#vacationMessage').val()
         };
         var id = $('#id').val();
@@ -80,7 +82,19 @@ var main = {
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
+    },
+
+    toggleUpdate: function (eventObject) {
+        var data = {
+
+        }
+        alert(eventObject);
+        alert(eventObject.target.value);
     }
 };
-
 main.init();
+
+function toggle_click(id, eventObject) {
+    alert(id);
+    alert(eventObject.value);
+}

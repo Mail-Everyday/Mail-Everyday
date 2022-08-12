@@ -7,6 +7,7 @@ import com.kme.maileverday.entity.UserKeyword;
 import com.kme.maileverday.entity.UserKeywordRepository;
 import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.keyword.KeywordSaveRequestDto;
+import com.kme.maileverday.web.dto.keyword.KeywordUpdateRequestDto;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.AfterEach;
@@ -306,7 +307,8 @@ public class KeywordControllerTest {
 
         String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
 
-        KeywordSaveRequestDto updateRequest = KeywordSaveRequestDto.builder()
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("MESSAGE_UPDATE")
                 .vacationMessage("메시지업데이트!")
                 .build();
 
@@ -349,7 +351,8 @@ public class KeywordControllerTest {
 
         String url = "http://localhost:" + port + "/api/v1/keywords/" + (idx + 1);  // idx + 1은 존재하지 않는 키워드 번호
 
-        KeywordSaveRequestDto updateRequest = KeywordSaveRequestDto.builder()
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("MESSAGE_UPDATE")
                 .vacationMessage("메시지가 업데이트되면 안됩니다. 등록된 키워드 번호가 아닌 존재하지 않는 키워드 번호로 요청을 날리고 있거든요.")
                 .build();
 
@@ -392,7 +395,8 @@ public class KeywordControllerTest {
 
         String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
 
-        KeywordSaveRequestDto updateRequest = KeywordSaveRequestDto.builder()
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("MESSAGE_UPDATE")
                 .vacationMessage("메시지가 업데이트되면 안됩니다. 수정권한이 없는 아이디로 수정을 요청하고 있거든요")
                 .build();
 
