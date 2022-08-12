@@ -12,7 +12,6 @@ var main = {
         $('#btn-update').on('click', function () {
             _this.update();
         });
-
     },
 
     save: function () {
@@ -82,19 +81,31 @@ var main = {
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
-    },
-
-    toggleUpdate: function (eventObject) {
-        var data = {
-
-        }
-        alert(eventObject);
-        alert(eventObject.target.value);
     }
 };
 main.init();
 
-function toggle_click(id, eventObject) {
-    alert(id);
-    alert(eventObject.value);
+function toggle_click(id, eventObject, requestType) {
+    var data = {
+        updateRequestType: requestType,
+        active: (requestType === 'ACTIVE_UPDATE' ? (eventObject.value === 'true' ? false : true) : null),
+        vacation: (requestType === 'VACATION_UPDATE' ? (eventObject.value === 'true' ? false : true) : null)
+    };
+
+    $.ajax({
+        type: 'PUT',
+        url: '/api/v1/keywords/' + id,
+        dataType: 'json',
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify(data)
+    }).done(function (response) {
+        if (response.success === true) {
+            location.href = '/keywords';
+        }
+        else {
+            alert(JSON.stringify(response));
+        }
+    }).fail(function (error) {
+        alert(JSON.stringify(error));
+    });
 }

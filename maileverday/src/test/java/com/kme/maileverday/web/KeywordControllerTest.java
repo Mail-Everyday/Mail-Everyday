@@ -295,7 +295,7 @@ public class KeywordControllerTest {
     }
 
     @Test
-    public void Keyword_수정테스트_정상조건() throws Exception {
+    public void Keyword_수정테스트_메시지수정_정상조건() throws Exception {
         // given
         KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
                 .userEmail("TEST@TEST.COM")
@@ -339,7 +339,7 @@ public class KeywordControllerTest {
     }
 
     @Test
-    public void Keyword_수정테스트_존재하지않는_키워드번호로_수정시도할때() throws Exception {
+    public void Keyword_수정테스트_메시지수정_존재하지않는_키워드번호로_수정시도할때() throws Exception {
         // given
         KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
                 .userEmail("TEST@TEST.COM")
@@ -383,7 +383,7 @@ public class KeywordControllerTest {
     }
 
     @Test
-    public void Keyword_수정테스트_내_키워드가아닌_다른사람의_키워드를_수정시도할때() throws Exception {
+    public void Keyword_수정테스트_메시지수정_내_키워드가아닌_다른사람의_키워드를_수정시도할때() throws Exception {
         // given
         KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
                 .userEmail("TEST@TEST.COM")
@@ -424,5 +424,189 @@ public class KeywordControllerTest {
         assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
         assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
         assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
+    }
+
+    @Test
+    public void Keyword_수정테스트_active수정_정상조건() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("ACTIVE_UPDATE")
+                .active(true)
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(true);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.OK.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.OK.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
+        assertThat(all.get(0).isActive()).isEqualTo(true);
+        assertThat(all.get(0).isVacation()).isEqualTo(false);
+    }
+
+    @Test
+    public void Keyword_수정테스트_active수정_내_키워드가아닌_다른사람의_키워드를_수정시도할때() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("ACTIVE_UPDATE")
+                .active(true)
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM이 아닌 악의적인 사용자!!");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(false);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.FORBIDDEN.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.FORBIDDEN.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
+        assertThat(all.get(0).isActive()).isEqualTo(false);
+        assertThat(all.get(0).isVacation()).isEqualTo(false);
+    }
+
+    @Test
+    public void Keyword_수정테스트_vacation수정_정상조건() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("VACATION_UPDATE")
+                .vacation(true)
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(true);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.OK.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.OK.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
+        assertThat(all.get(0).isActive()).isEqualTo(false);
+        assertThat(all.get(0).isVacation()).isEqualTo(true);
+    }
+
+    @Test
+    public void Keyword_수정테스트_vacation수정_내_키워드가아닌_다른사람의_키워드를_수정시도할때() throws Exception {
+        // given
+        KeywordSaveRequestDto saveRequest = KeywordSaveRequestDto.builder()
+                .userEmail("TEST@TEST.COM")
+                .keyword("테스트키워드입니다")
+                .vacationMessage("테스트키워드메시지입니다")
+                .build();
+        UserEmail user = userEmailRepository.findByEmail(saveRequest.getUserEmail());
+        long idx = keywordRepository.save(saveRequest.toEntity(user)).getId();
+
+        String url = "http://localhost:" + port + "/api/v1/keywords/" + idx;
+
+        KeywordUpdateRequestDto updateRequest = KeywordUpdateRequestDto.builder()
+                .updateRequestType("VACATION_UPDATE")
+                .vacation(true)
+                .build();
+
+        // when
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute("userEmail", "TEST@TEST.COM이 아닌 악의적인 사용자!!");
+
+        MvcResult result = mvc.perform(put(url)
+                        .session(session)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andExpect(status().isOk()).andReturn();
+
+        String response = result.getResponse().getContentAsString();
+        JSONParser parser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) parser.parse(response);
+
+        // then
+        assertThat(jsonObject.get("success")).isEqualTo(false);
+        assertThat(jsonObject.get("code")).isEqualTo((long)CustomMessage.FORBIDDEN.getHttpCode());
+        assertThat(jsonObject.get("message")).isEqualTo(CustomMessage.FORBIDDEN.getDesc());
+
+        List<UserKeyword> all = keywordRepository.findAll();
+        assertThat(all.size()).isEqualTo(1);
+        assertThat(all.get(0).getKeyword()).isEqualTo(saveRequest.getKeyword());
+        assertThat(all.get(0).getEmail().getEmail()).isEqualTo(saveRequest.getUserEmail());
+        assertThat(all.get(0).getVacationResponse()).isEqualTo(saveRequest.getVacationMessage());
+        assertThat(all.get(0).isActive()).isEqualTo(false);
+        assertThat(all.get(0).isVacation()).isEqualTo(false);
     }
 }
