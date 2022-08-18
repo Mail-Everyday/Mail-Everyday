@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,15 +39,25 @@ public class EmailHandler {
 
     private List<Email> findNewEmails(Token token, MessageListResponseGoogleDto msgList, LocalDateTime lastDateTime) {
         int i = 0;
-        List<Email> emails;
-        List<MessageIdGoogleDto> msgIds= msgList.getMessages();
+        List<Email> emails = new ArrayList<Email>();
+        List<MessageIdGoogleDto> msgIds = msgList.getMessages();
+        String nextPage = msgList.getNextPageToken();
 
         while (i < msgIds.size()) {
             if (!isNewEmail(token, msgIds.get(i), lastDateTime)) {
                 break;
             }
             else {
+                MessageResponseGoogleDto msg = GoogleApiHelper.getMessageResponse(token, msgIds.get(i).getId());
+                emails.add(parseEmail(msg));
 
+                if (i == msgIds.size() - 1 && nextPage != null) {
+                    // 다음 페이지도 확인
+                    i = -1;
+                    MessageListResponseGoogleDto temp = GoogleApiHelper.getMessageList(token, nextPage);
+                    nextPage = temp.getNextPageToken();
+                    msgIds = temp.getMessages();
+                }
             }
             i++;
         }
@@ -70,5 +81,37 @@ public class EmailHandler {
             }
         }
         return null;
+    }
+
+    private Email parseEmail(MessageResponseGoogleDto msg) {
+        String msgId = msg.getId();
+        String snippet = msg.getSnippet();
+
+        String from = null;
+        String subject = null;
+        LocalDateTime dateTime = null;
+        List<MessageHeaderGoogleDto> headers = msg.getPayload().getHeaders();
+        for (int i = 0; i < headers.size(); i++) {
+            switch (headers.get(i).getName()) {
+                case "From":
+                    from = headers.get(i).getValue();
+                    break;
+
+                case "Subject":
+                    subject = headers.get(i).getValue();
+                    break;
+
+                case "Date":
+                    dateTime = UtilityFunctions.exchangeToLocalDateTime(headers.get(i).getValue());
+                    break;
+            }
+        }
+        return Email.builder()
+                .id(msgId)
+                .from(from)
+                .subject(subject)
+                .snippet(snippet)
+                .date(dateTime)
+                .build();
     }
 }
