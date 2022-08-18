@@ -19,6 +19,9 @@ public class EnvironmentKey {
     @Getter
     private static String googleApiScope;
 
+    @Getter
+    private static String dateKeyName;
+
     @Value("${GOOGLE-API-KEY}")
     private void setGoogleApiKey(String value) {
         googleApiKey = value;
@@ -37,5 +40,10 @@ public class EnvironmentKey {
     @Value("${GOOGLE-API-SCOPE}")
     private void setGoogleApiScope(String value) {
         googleApiScope = value;
+    }
+
+    @Value("${GOOGLE-API-DATETIME-KEY-NAME}")
+    private void setDateKeyName(String value) {
+        dateKeyName = value;
     }
 }

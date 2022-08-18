@@ -52,4 +52,8 @@ public class UserEmail implements Serializable {
         this.refreshToken = refreshToken;
         this.lastMailTime = lastMailTime;
     }
+
+    public void updateAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 }
