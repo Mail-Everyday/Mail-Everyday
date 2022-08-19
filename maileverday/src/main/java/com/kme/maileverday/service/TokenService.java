@@ -1,9 +1,7 @@
 package com.kme.maileverday.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kme.maileverday.entity.Token;
-import com.kme.maileverday.entity.UserEmail;
-import com.kme.maileverday.entity.UserInfo;
+import com.kme.maileverday.dao.Token;
+import com.kme.maileverday.dao.UserInfo;
 import com.kme.maileverday.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

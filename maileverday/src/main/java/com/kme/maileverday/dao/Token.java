@@ -1,4 +1,4 @@
-package com.kme.maileverday.entity;
+package com.kme.maileverday.dao;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
