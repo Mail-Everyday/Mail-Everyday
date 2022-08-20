@@ -54,7 +54,6 @@ public class EmailHandler {
             else {
                 MessageResponseGoogleDto msg = GoogleApiHelper.getMessageResponse(token, msgIds.get(i).getId());
                 emails.add(parseEmail(msg));
-                System.out.println(msg.getSnippet());
                 if (i == msgIds.size() - 1 && nextPage != null) {
                     // 다음 페이지도 확인
                     i = -1;

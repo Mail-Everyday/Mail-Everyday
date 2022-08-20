@@ -5,6 +5,8 @@ import com.kme.maileverday.web.dto.googleLogin.*;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Component
@@ -45,7 +47,7 @@ public class GoogleApiHelper {
         MessageListResponseGoogleDto msgList = getMessageList(token, null);
         if (msgList.getResultSizeEstimate() == 0) {
             // 메일함에 메일이 하나도 없을때 예외처리
-            return LocalDateTime.now().toString();
+            return DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now());
         }
 
         String lastMsgId = msgList.getMessages().get(0).getId();
@@ -56,6 +58,6 @@ public class GoogleApiHelper {
                 return msgHeader.get(i).getValue();
             }
         }
-        return LocalDateTime.now().toString();
+        return DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now());
     }
 }
