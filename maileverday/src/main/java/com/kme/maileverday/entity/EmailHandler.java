@@ -40,6 +40,10 @@ public class EmailHandler {
     private List<Email> findNewEmails(Token token, MessageListResponseGoogleDto msgList, LocalDateTime lastDateTime) {
         int i = 0;
         List<Email> emails = new ArrayList<Email>();
+
+        if (msgList.getResultSizeEstimate() == 0) {
+            return emails;
+        }
         List<MessageIdGoogleDto> msgIds = msgList.getMessages();
         String nextPage = msgList.getNextPageToken();
 
@@ -50,7 +54,7 @@ public class EmailHandler {
             else {
                 MessageResponseGoogleDto msg = GoogleApiHelper.getMessageResponse(token, msgIds.get(i).getId());
                 emails.add(parseEmail(msg));
-
+                System.out.println(msg.getSnippet());
                 if (i == msgIds.size() - 1 && nextPage != null) {
                     // 다음 페이지도 확인
                     i = -1;

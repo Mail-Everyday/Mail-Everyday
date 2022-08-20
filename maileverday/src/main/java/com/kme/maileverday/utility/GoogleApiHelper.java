@@ -43,12 +43,12 @@ public class GoogleApiHelper {
 
     public static String getLastMailTime(Token token) {
         MessageListResponseGoogleDto msgList = getMessageList(token, null);
-
-        String lastMsgId = msgList.getMessages().get(0).getId();
-        if (lastMsgId == null) {
+        if (msgList.getResultSizeEstimate() == 0) {
             // 메일함에 메일이 하나도 없을때 예외처리
             return LocalDateTime.now().toString();
         }
+
+        String lastMsgId = msgList.getMessages().get(0).getId();
         MessageResponseGoogleDto msg = getMessageResponse(token, lastMsgId);
         List<MessageHeaderGoogleDto> msgHeader = msg.getPayload().getHeaders();
         for (int i = 0; i < msgHeader.size(); i++) {

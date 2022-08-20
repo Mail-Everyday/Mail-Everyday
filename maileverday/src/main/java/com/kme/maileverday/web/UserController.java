@@ -32,6 +32,7 @@ public class UserController {
                 session.setAttribute("userEmail", userInfo.getUserEmail());
                 session.setAttribute("userName", userInfo.getUserName());
             } catch (Exception e) {
+                e.printStackTrace();
                 return "loginalert";
             }
             return "redirect:"
