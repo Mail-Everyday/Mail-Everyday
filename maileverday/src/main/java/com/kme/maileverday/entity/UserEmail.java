@@ -41,9 +41,12 @@ public class UserEmail implements Serializable {
     @Column
     private String lastMailTime;
 
+    @Column
+    private String phone;
+
     @Builder
     public UserEmail(String email, String name, LocalDateTime registrationDate, LocalDateTime lastLoginDate,
-                     String accessToken, String refreshToken, String lastMailTime) {
+                     String accessToken, String refreshToken, String lastMailTime, String phone) {
         this.email = email;
         this.name = name;
         this.registrationDate = registrationDate;
@@ -51,6 +54,7 @@ public class UserEmail implements Serializable {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.lastMailTime = lastMailTime;
+        this.phone = phone;
     }
 
     public void updateAccessToken(String accessToken) {

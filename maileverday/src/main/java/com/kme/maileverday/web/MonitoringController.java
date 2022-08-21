@@ -14,7 +14,7 @@ public class MonitoringController {
     private final MonitoringService monitoringService;
 
     @GetMapping("/test/monitoring")
-    public void test() throws CustomException {
-        monitoringService.test();
+    public void test() {
+        monitoringService.monitoring();
     }
 }

@@ -1,7 +1,6 @@
 package com.kme.maileverday.service;
 
 import com.kme.maileverday.entity.*;
-import com.kme.maileverday.utility.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class MonitoringService {
 
     @Scheduled(cron = "0 * * * * *")
     @Transactional
-    public void test() throws CustomException {
+    public void monitoring() {
         System.out.println("Monitoring available");
         List<UserEmail> all = userEmailRepository.findAll();
 
