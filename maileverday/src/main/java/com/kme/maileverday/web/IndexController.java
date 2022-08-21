@@ -1,5 +1,6 @@
 package com.kme.maileverday.web;
 
+import com.kme.maileverday.service.GoogleUserService;
 import com.kme.maileverday.service.KeywordService;
 import com.kme.maileverday.service.ResponseService;
 import com.kme.maileverday.utility.exception.CustomException;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 @RequiredArgsConstructor
 @Controller
 public class IndexController {
+    private final GoogleUserService googleUserService;
     private final KeywordService keywordService;
 
     @GetMapping("/")
@@ -46,5 +48,16 @@ public class IndexController {
             model.addAttribute("message", e.getMessage());
         }
         return "keywords-update";
+    }
+
+    @GetMapping("/phone/save")
+    public String phoneSave(HttpSession session, Model model) {
+        try {
+            model.addAttribute("phoneInfo",
+                    googleUserService.findPhoneNo((String) session.getAttribute("userEmail")));
+        } catch (CustomException e) {
+            model.addAttribute("message", e.getMessage());
+        }
+        return "phone-save";
     }
 }

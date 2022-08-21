@@ -4,6 +4,8 @@ import com.kme.maileverday.entity.Token;
 import com.kme.maileverday.entity.UserEmail;
 import com.kme.maileverday.entity.UserEmailRepository;
 import com.kme.maileverday.utility.GoogleApiHelper;
+import com.kme.maileverday.utility.exception.CustomException;
+import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.googleLogin.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -44,5 +46,25 @@ public class GoogleUserService {
                 .userEmail(userInfo.getEmail())
                 .userName(userInfo.getName())
                 .build();
+    }
+
+    @Transactional
+    public PhoneUpdateResponseDto findPhoneNo(String userEmail) throws CustomException {
+        UserEmail user = userEmailRepository.findByEmail(userEmail);
+
+        if (user == null) {
+            throw new CustomException(CustomMessage.USER_EMAIL_NOT_FOUND);
+        }
+        return new PhoneUpdateResponseDto(user);
+    }
+
+    @Transactional
+    public void phoneUpdate(String userEmail, PhoneUpdateRequestDto request) throws CustomException {
+        UserEmail user = userEmailRepository.findByEmail(userEmail);
+
+        if (user == null) {
+            throw new CustomException(CustomMessage.USER_EMAIL_NOT_FOUND);
+        }
+        user.updatePhone(request.getPhoneNo());
     }
 }

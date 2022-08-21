@@ -12,6 +12,10 @@ var main = {
         $('#btn-update').on('click', function () {
             _this.update();
         });
+
+        $('#btn-phone-update').on('click', function () {
+            _this.phone_update();
+        });
     },
 
     save: function () {
@@ -67,6 +71,30 @@ var main = {
         $.ajax({
             type: 'PUT',
             url: '/api/v1/keywords/' + id,
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function (response) {
+            if (response.success === true) {
+                alert('Update success');
+                location.href = '/keywords';
+            }
+            else {
+                alert(JSON.stringify(response));
+            }
+        }).fail(function (error) {
+            alert(JSON.stringify(error));
+        });
+    },
+
+    phone_update: function () {
+        var data = {
+            phoneNo: $('#phoneNo').val()
+        };
+
+        $.ajax({
+            type: 'PUT',
+            url: '/api/v1/phone',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)

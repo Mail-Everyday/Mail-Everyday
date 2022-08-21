@@ -1,12 +1,16 @@
 package com.kme.maileverday.web;
 
 import com.kme.maileverday.service.GoogleUserService;
+import com.kme.maileverday.service.ResponseService;
 import com.kme.maileverday.utility.EnvironmentKey;
+import com.kme.maileverday.utility.exception.CustomException;
+import com.kme.maileverday.utility.exception.CustomMessage;
 import com.kme.maileverday.web.dto.googleLogin.LoginServiceResponseDto;
+import com.kme.maileverday.web.dto.googleLogin.PhoneUpdateRequestDto;
+import com.kme.maileverday.web.dto.response.SingleResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,6 +18,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 public class UserController {
     private final GoogleUserService googleUserService;
+    private final ResponseService responseService;
 
     @GetMapping("/login/google")
     public String loginGoogle(@RequestParam(value = "code", required = false) String authCode, HttpSession session) {
@@ -45,5 +50,16 @@ public class UserController {
         session.removeAttribute("userEmail");
         session.removeAttribute("userName");
         return "redirect:" + "/";
+    }
+
+    @PutMapping("/api/v1/phone")
+    @ResponseBody
+    public SingleResponse<String> phoneUpdate(@RequestBody PhoneUpdateRequestDto request, HttpSession session) {
+        try {
+            googleUserService.phoneUpdate((String) session.getAttribute("userEmail"), request);
+            return responseService.getSingleResponse(null, 200, true, CustomMessage.OK.getDesc());
+        } catch (CustomException e) {
+            return responseService.getSingleResponse(null, e.getHttpCode(), false, e.getMessage());
+        }
     }
 }

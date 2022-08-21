@@ -60,8 +60,8 @@ public class UserEmail implements Serializable {
     public void updateAccessToken(String accessToken) {
         this.accessToken = accessToken;
     }
-
     public void updateLastMailTime(String lastMailTime) {
         this.lastMailTime = lastMailTime;
     }
+    public void updatePhone(String phone) { this.phone = phone; }
 }
