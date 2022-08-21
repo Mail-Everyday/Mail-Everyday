@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Objects;
 
 @Controller
 public class UserController {
@@ -50,12 +51,16 @@ public class UserController {
         System.out.println("나옴");
         String failMessage = "아이디 혹은 비밀번호가 잘못 되었습니다.";
 
-        if (login == null){
+        if (!Objects.equals(login, loginReq)){
             rttr.addFlashAttribute("loginFail", failMessage);
             return "redirect:/signin";
         }
+        System.out.println("성공");
         session.setAttribute("email", loginReq.getEmail());
         session.setAttribute("name", loginReq.getName());
+
+        System.out.println(session.getAttribute("email"));
+        System.out.println(session.getAttribute("name"));
         return "redirect:/";
 
 

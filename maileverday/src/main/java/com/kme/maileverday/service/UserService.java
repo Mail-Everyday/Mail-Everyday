@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -42,27 +44,30 @@ public class UserService {
     }
 
     private boolean validateDuplicateUser(String email){
-        UserEmail userEmail = userRepository.findByEmail(email);
-        if (userEmail == null){
-            return true;
-        }else{
+        Optional<UserEmail> userEmail = userRepository.findByEmail(email);
+        if (userEmail.isPresent()){
             return false;
+        }else{
+            return true;
         }
 
     }
 
 
     public LoginReq userLogin(LoginReq loginReq){
-        UserEmail userEmail = userRepository.findByEmail(loginReq.getEmail());
-        System.out.println(userEmail);
+        Optional<UserEmail> userEmail = userRepository.findByEmail(loginReq.getEmail());
+        System.out.println("시작!");
 
-        if (userEmail != null){
-            if (userEmail.getName() == loginReq.getName()){
+        if (userEmail.isPresent()){
+            if (Objects.equals(userEmail.get().getName(), loginReq.getName())) {
+                System.out.println(userEmail.get().getName());
+                System.out.println(userEmail.get().getEmail());
+
                 return loginReq;
-            } else{
+            } else {
                 return null;
             }
-        } else {
+        } else{
             return null;
         }
 
