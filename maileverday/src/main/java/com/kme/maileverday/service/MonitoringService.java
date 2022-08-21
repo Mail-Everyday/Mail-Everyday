@@ -3,15 +3,14 @@ package com.kme.maileverday.service;
 import com.kme.maileverday.entity.*;
 import com.kme.maileverday.utility.exception.CustomException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,8 +19,10 @@ public class MonitoringService {
     private final UserKeywordRepository userKeywordRepository;
     private final EmailHandler emailHandler;
 
+    @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void test() throws CustomException {
+        System.out.println("Monitoring available");
         List<UserEmail> all = userEmailRepository.findAll();
 
         for (int i = 0; i < all.size(); i++) {
