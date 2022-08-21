@@ -22,6 +22,15 @@ public class EnvironmentKey {
     @Getter
     private static String dateKeyName;
 
+    @Getter
+    private static String naverCloudAccessKey;
+
+    @Getter
+    private static String naverCloudSecretKey;
+
+    @Getter
+    private static String naverCloudSMSServiceId;
+
     @Value("${GOOGLE-API-KEY}")
     private void setGoogleApiKey(String value) {
         googleApiKey = value;
@@ -45,5 +54,20 @@ public class EnvironmentKey {
     @Value("${GOOGLE-API-DATETIME-KEY-NAME}")
     private void setDateKeyName(String value) {
         dateKeyName = value;
+    }
+
+    @Value("${NCLOUD-ACCESS-KEY}")
+    private void setNaverCloudAccessKey(String value) {
+        naverCloudAccessKey = value;
+    }
+
+    @Value("${NCLOUD-SECRET-KEY}")
+    private void setNaverCloudSecretKey(String value) {
+        naverCloudSecretKey = value;
+    }
+
+    @Value("${NCLOUD-SMS-SERVICE-ID}")
+    private void setNaverCloudSMSServiceId(String value) {
+        naverCloudSMSServiceId = value;
     }
 }
