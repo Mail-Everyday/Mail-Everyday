@@ -1,6 +1,7 @@
 package com.kme.maileverday.service;
 
 import com.kme.maileverday.entity.*;
+import com.kme.maileverday.utility.LogColorHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,7 @@ public class MonitoringService {
     @Scheduled(cron = "0 * * * * *")
     @Transactional
     public void monitoring() {
-        System.out.println("> Scheduled - Monitoring " + LocalDateTime.now());
+        System.out.println(LogColorHelper.blue + "> Scheduled - Monitoring " + LocalDateTime.now() + LogColorHelper.exit);
         List<UserEmail> all = userEmailRepository.findAll();
 
         for (int i = 0; i < all.size(); i++) {
@@ -37,12 +38,13 @@ public class MonitoringService {
                     for (int j = 0; j < emails.size(); j++) {
                         for (int k = 0; k < keywords.size(); k++) {
                             if (emails.get(j).getSubject().contains(keywords.get(k).getKeyword())) {
-                                System.out.println("Subject: " + emails.get(j).getSubject() + " Date: " + emails.get(j).getDate());
+                                System.out.println(LogColorHelper.green +
+                                        "Subject: " + emails.get(j).getSubject() + " Date: " + emails.get(j).getDate() + LogColorHelper.exit);
 
                                 // SMS 발송시도
                                 try {notificationService.sendSMS(emails.get(j), all.get(i).getPhone());}
                                 catch (Exception e) {
-                                    System.out.println("> SMS Send Failed!");
+                                    System.out.println(LogColorHelper.red + "> SMS Send Failed!" + LogColorHelper.exit);
                                     e.printStackTrace();
                                 }
                                 // 다음 이메일로
