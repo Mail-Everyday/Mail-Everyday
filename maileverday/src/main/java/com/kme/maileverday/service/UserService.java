@@ -45,23 +45,16 @@ public class UserService {
 
     private boolean validateDuplicateUser(String email){
         Optional<UserEmail> userEmail = userRepository.findByEmail(email);
-        if (userEmail.isPresent()){
-            return false;
-        }else{
-            return true;
-        }
+        return !userEmail.isPresent();
 
     }
 
 
     public LoginReq userLogin(LoginReq loginReq){
         Optional<UserEmail> userEmail = userRepository.findByEmail(loginReq.getEmail());
-        System.out.println("시작!");
 
         if (userEmail.isPresent()){
             if (Objects.equals(userEmail.get().getName(), loginReq.getName())) {
-                System.out.println(userEmail.get().getName());
-                System.out.println(userEmail.get().getEmail());
 
                 return loginReq;
             } else {

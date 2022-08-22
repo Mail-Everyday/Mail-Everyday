@@ -14,6 +14,11 @@ public class KeywordController {
     @Autowired
     private KeywordService keywordService;
 
+    @GetMapping("/mykeyword")
+    public String getKeywordList(){
+        return ".";
+    }
+
     @GetMapping("/updatekeyword")
     public String toKeyword(){
         return "createKeywordForm";

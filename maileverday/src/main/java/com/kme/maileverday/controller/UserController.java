@@ -40,30 +40,21 @@ public class UserController {
         return "loginForm";
     }
     @PostMapping("/signin")
-    public String signin(LoginReq loginReq, HttpServletRequest request, RedirectAttributes rttr){
-
-        HttpSession session = request.getSession();
-
-        System.out.println("들어옴");
+    public String signin(LoginReq loginReq, HttpSession session, RedirectAttributes rttr){
 
         LoginReq login = userService.userLogin(loginReq);
 
-        System.out.println("나옴");
         String failMessage = "아이디 혹은 비밀번호가 잘못 되었습니다.";
 
         if (!Objects.equals(login, loginReq)){
             rttr.addFlashAttribute("loginFail", failMessage);
             return "redirect:/signin";
         }
-        System.out.println("성공");
         session.setAttribute("email", loginReq.getEmail());
         session.setAttribute("name", loginReq.getName());
 
-        System.out.println(session.getAttribute("email"));
-        System.out.println(session.getAttribute("name"));
         return "redirect:/";
-
-
-
     }
+
+
 }

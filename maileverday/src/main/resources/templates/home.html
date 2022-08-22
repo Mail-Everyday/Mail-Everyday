@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<meta charset="UTF-8">
+<body>
+
+<div class="container">
+    <div>
+        <h1>Mail Everyday</h1>
+        <p>회원 기능</p>
+        <p>
+            <tr></tr>
+            <a th:if="${session.email == null}" href="/signup">회원 가입</a>
+            <a th:if="${session.email == null}" href="/signin">로그인</a>
+            <a th:if="${session.email != null}" href="/mykeyword">내 키워드 관리</a>
+            <a th:if="${session.email != null}" href="/logout">로그아웃</a>
+            <span th:text="${session.name}">님</span>
+        </p>
+    </div>
+</div>
+
+</body>
+
+
+</html>
