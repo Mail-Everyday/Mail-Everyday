@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationService {
     public SendSMSResponseDto sendSMS(Email email, String to) throws Exception {
-        SendSMSResponseDto response = NCloudApiHelper.sendSMS(email.getSubject(), to);
+        final String smsContent = "(ME알림서비스) 새로운 메일이 도착했습니다.\n" + email.getSubject();
+        
+        SendSMSResponseDto response = NCloudApiHelper.sendSMS(smsContent, to);
         System.out.println(LogColorHelper.green + "> SMS Send Success!\ncode: " + response.getStatusCode() + "\nstatus: " + response.getStatusName()
                 + "\nrequest id: " + response.getRequestId() + "\nrequest time: " + response.getRequestTime() + LogColorHelper.exit);
 
