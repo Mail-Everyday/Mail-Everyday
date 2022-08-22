@@ -2,6 +2,8 @@ package com.kme.maileverday.web.dto.ncloudsens;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
@@ -27,5 +29,20 @@ public class SendSMSRequestDto {
         this.subject = subject;
         this.content = content;
         this.messages = messages;
+    }
+
+    public MultiValueMap<String, String> toJSONMap() {
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("type", type.toString());
+        map.add("contentType", contentType.toString());
+        map.add("countryCode", countryCode);
+        map.add("from", from);
+        map.add("subject", subject);
+        map.add("content", content);
+        map.add("messages", messages.toString());
+        map.add("reserveTime", reserveTime);
+        map.add("reserveTimeZone", reserveTimeZone);
+        map.add("scheduleCode", scheduleCode);
+        return map;
     }
 }

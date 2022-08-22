@@ -5,6 +5,9 @@ import com.kme.maileverday.utility.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,7 +17,7 @@ public class MonitoringController {
     private final MonitoringService monitoringService;
 
     @GetMapping("/test/monitoring")
-    public void test() {
+    public void test() throws Exception {
         monitoringService.monitoring();
     }
 }

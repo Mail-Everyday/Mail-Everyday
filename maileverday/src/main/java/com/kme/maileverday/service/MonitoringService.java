@@ -16,11 +16,13 @@ import java.util.List;
 public class MonitoringService {
     private final UserEmailRepository userEmailRepository;
     private final UserKeywordRepository userKeywordRepository;
+
     private final EmailHandler emailHandler;
+    private final NotificationService notificationService;
 
     @Scheduled(cron = "0 * * * * *")
     @Transactional
-    public void monitoring() {
+    public void monitoring() throws Exception {
         System.out.println("Monitoring available");
         List<UserEmail> all = userEmailRepository.findAll();
 
@@ -35,6 +37,7 @@ public class MonitoringService {
                         for (int k = 0; k < keywords.size(); k++) {
                             if (emails.get(j).getSubject().contains(keywords.get(k).getKeyword())) {
                                 System.out.println("Subject: " + emails.get(j).getSubject() + " Date: " + emails.get(j).getDate());
+                                System.out.println(notificationService.sendSMS(emails.get(j), all.get(i).getPhone()));
                             }
                         }
                     }

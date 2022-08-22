@@ -31,6 +31,9 @@ public class EnvironmentKey {
     @Getter
     private static String naverCloudSMSServiceId;
 
+    @Getter
+    private static String naverCloudFromPhoneNo;
+
     @Value("${GOOGLE-API-KEY}")
     private void setGoogleApiKey(String value) {
         googleApiKey = value;
@@ -69,5 +72,10 @@ public class EnvironmentKey {
     @Value("${NCLOUD-SMS-SERVICE-ID}")
     private void setNaverCloudSMSServiceId(String value) {
         naverCloudSMSServiceId = value;
+    }
+
+    @Value("${NCLOUD-SMS-FROM-PHONE-NO}")
+    private void setNaverCloudFromPhoneNo(String value) {
+        naverCloudFromPhoneNo = value;
     }
 }
