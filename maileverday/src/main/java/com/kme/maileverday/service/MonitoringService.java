@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,8 +23,8 @@ public class MonitoringService {
 
     @Scheduled(cron = "0 * * * * *")
     @Transactional
-    public void monitoring() throws Exception {
-        System.out.println("Monitoring available");
+    public void monitoring() {
+        System.out.println("> Scheduled - Monitoring " + LocalDateTime.now());
         List<UserEmail> all = userEmailRepository.findAll();
 
         for (int i = 0; i < all.size(); i++) {
@@ -37,7 +38,15 @@ public class MonitoringService {
                         for (int k = 0; k < keywords.size(); k++) {
                             if (emails.get(j).getSubject().contains(keywords.get(k).getKeyword())) {
                                 System.out.println("Subject: " + emails.get(j).getSubject() + " Date: " + emails.get(j).getDate());
-                                System.out.println(notificationService.sendSMS(emails.get(j), all.get(i).getPhone()));
+
+                                // SMS 발송시도
+                                try {notificationService.sendSMS(emails.get(j), all.get(i).getPhone());}
+                                catch (Exception e) {
+                                    System.out.println("> SMS Send Failed!");
+                                    e.printStackTrace();
+                                }
+                                // 다음 이메일로
+                                break;
                             }
                         }
                     }
