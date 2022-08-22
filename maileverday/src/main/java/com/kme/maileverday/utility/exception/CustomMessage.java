@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum CustomMessage {
     OK("OK", "OK", 200),
     BAD_REQUEST("BAD_REQUEST", "잘못된 요청입니다.", 400),
+    PHONE_NUMBER_FORMAT_INVALIDATED("PHONE_NUMBER_FORMAT_INVALIDATED", "입력된 핸드폰 번호가 올바르지 않습니다. (예시)01012345678", 400),
     NEED_AUTH_PERMISSION ("NEED_AUTH_PERMISSION", "OAuth 권한 승인 필요", 401),
     TOKEN_INVALID ("TOKEN_INVALID", "유효하지 않은 토큰", 401),
     REFRESH_TOKEN_INVALID ("REFRESH_TOKEN_INVALID", "유효하지 않은 리프레쉬 토큰", 401),

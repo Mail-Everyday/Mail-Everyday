@@ -65,6 +65,7 @@ public class GoogleUserService {
         if (user == null) {
             throw new CustomException(CustomMessage.USER_EMAIL_NOT_FOUND);
         }
+        request.isValidated();  // 유효하지 않은 번호의 경우 예외를 발생시킴
         user.updatePhone(request.getPhoneNo());
     }
 }
