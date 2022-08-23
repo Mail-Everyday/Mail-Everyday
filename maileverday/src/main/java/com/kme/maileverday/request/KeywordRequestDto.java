@@ -1,6 +1,5 @@
 package com.kme.maileverday.request;
 
-import com.kme.maileverday.entity.Keyword;
 import lombok.Getter;
 import lombok.Setter;
 

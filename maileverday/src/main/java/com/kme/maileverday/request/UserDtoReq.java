@@ -18,6 +18,7 @@ public class UserDtoReq {
     private String accessToken;
     private String refreshToken;
     private String lastMailTime;
+    private String phone;
 
 
     public UserEmail toEntity(){
@@ -29,6 +30,7 @@ public class UserDtoReq {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .lastMailTime(lastMailTime)
+                .phone(phone)
                 .build();
 
         return build;

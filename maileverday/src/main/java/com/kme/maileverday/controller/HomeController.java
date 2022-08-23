@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 public class HomeController {
 
     @RequestMapping("/")
-    public String Home(HttpSession session){
+    public String Home(){
         return "home";
     }
 }

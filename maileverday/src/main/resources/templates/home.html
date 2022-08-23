@@ -11,9 +11,11 @@
             <tr></tr>
             <a th:if="${session.email == null}" href="/signup">회원 가입</a>
             <a th:if="${session.email == null}" href="/signin">로그인</a>
+            <a th:if="${session.email != null}" href="/getphone">휴대폰번호 등록/수정</a>
             <a th:if="${session.email != null}" href="/mykeyword">내 키워드 관리</a>
             <a th:if="${session.email != null}" href="/logout">로그아웃</a>
-            <span th:text="${session.name}">님</span>
+            <span th:text="${session.name}"></span>
+            <span th:if="${session.email != null}">님</span>
         </p>
     </div>
 </div>

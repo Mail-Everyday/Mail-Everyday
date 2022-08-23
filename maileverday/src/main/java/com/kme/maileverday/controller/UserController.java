@@ -34,6 +34,17 @@ public class UserController {
                 + "access_type=" + "offline";
     }
 
+    @GetMapping("/getphone")
+    private String toGetPhone(){
+        return "getPhoneNumber";
+    }
+    @PostMapping("/getphone")
+    private String getPhone(HttpSession session, String phone){
+        String name = (String) session.getAttribute("name");
+        userService.phoneJoin(name, phone);
+        return "redirect:/";
+    }
+
 
     @GetMapping("/signin")
     public String toSigninForm(){

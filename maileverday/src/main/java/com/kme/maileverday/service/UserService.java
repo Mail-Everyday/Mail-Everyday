@@ -33,13 +33,20 @@ public class UserService {
                     .accessToken(tokeninfo.getAccess_token())
                     .refreshToken(tokeninfo.getRefresh_token())
                     .lastMailTime(null)
+                    .phone(null)
                     .build();
 
             UserEmail userEmail = userDtoReq.toEntity();
             userRepository.save(userEmail);
         }
 
+    }
 
+    public void phoneJoin(String name, String phone){
+
+        UserEmail userEmail = userRepository.findByName(name);
+        userEmail.setPhone(phone);
+        userRepository.save(userEmail);
 
     }
 

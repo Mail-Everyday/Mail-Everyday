@@ -1,9 +1,14 @@
 package com.kme.maileverday.entity;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Getter
+@Builder
 public class UserKeyword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
