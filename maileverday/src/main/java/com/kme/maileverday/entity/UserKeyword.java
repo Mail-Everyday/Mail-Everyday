@@ -30,6 +30,9 @@ public class UserKeyword {
     private String keyword;
 
     @Column(nullable = false)
+    private Byte filterType;
+
+    @Column(nullable = false)
     private boolean active;
 
     @Column(nullable = false)
