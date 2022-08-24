@@ -4,6 +4,7 @@ package com.kme.maileverday.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @AllArgsConstructor
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 @Entity
 @Table (name = "userEmail", indexes = @Index(name = "idx_userEmail_email", columnList = "email"))
-public class UserEmail {
+public class UserEmail implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div class="container">
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>활성화</th>
+                <th>키워드</th>
+                <th>등록일</th>
+                <th>휴가모드</th>
+                <th>휴가응답메세지</th>
+                <th>서치범위</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="keywordList : ${keywordLists}">
+                <td th:text="${keywordList.active}"></td>
+                <td th:text="${keywordList.keyword}"></td>
+                <td th:text="${keywordList.vacationResponse}"></td>
+                <td th:text="${keywordList.vacation}"></td>
+                <td th:text="${keywordList.vacationResponse}"></td>
+                <td th:text="${keywordList.filterType}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

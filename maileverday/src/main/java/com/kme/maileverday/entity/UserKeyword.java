@@ -1,11 +1,15 @@
 package com.kme.maileverday.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Getter
 @Builder
@@ -20,6 +24,9 @@ public class UserKeyword {
 
     @Column(nullable = false)
     private String keyword;
+
+    @Column(nullable = false)
+    private Byte filterType;
 
     @Column(nullable = false)
     private boolean active;

@@ -49,6 +49,7 @@ public class TokenService {
     public UserInfo getUserInfo(Token tokeninfo){
 
         String url = "https://www.googleapis.com/oauth2/v1/userinfo";
+//        "https://people.googleapis.com/v1/people/me?personFields=names"
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + tokeninfo.getAccess_token());
