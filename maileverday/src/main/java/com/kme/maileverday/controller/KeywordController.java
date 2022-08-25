@@ -26,6 +26,19 @@ public class KeywordController {
         return "keywordHome";
     }
 
+
+    @GetMapping("/newkeyword")
+    private String newkeyword(){
+        return "createKeywordForm";
+    }
+    @PostMapping("/newkeyword")
+    private String newkeyword1(HttpSession session, String keyword, String vacationres){
+
+        keywordService.createKeyword(session, keyword, vacationres);
+        return "keywordHome";
+    }
+
+
     @GetMapping("/updatekeyword")
     public String toKeyword(){
         return "createKeywordForm";

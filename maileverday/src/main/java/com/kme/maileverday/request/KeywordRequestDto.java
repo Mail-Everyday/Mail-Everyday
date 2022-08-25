@@ -1,15 +1,23 @@
 package com.kme.maileverday.request;
 
+import com.kme.maileverday.entity.UserEmail;
+import com.kme.maileverday.entity.UserKeyword;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
+@Builder
 public class KeywordRequestDto {
 
-    private String email;
+    private UserEmail email;
 
     private String keyword;
+
+    private Byte filterType;
 
     private boolean active;
 
@@ -17,12 +25,21 @@ public class KeywordRequestDto {
 
     private String vacationResponse;
 
+    private LocalDateTime registrationDate;
 
 
-//    public Keyword toEntity(){
-//        Keyword build = Keyword.builder()
-//                .keyword(keyword)
-//
-//                .build()
-//    }
+
+    public UserKeyword toEntity(){
+        UserKeyword build = UserKeyword.builder()
+                .email(email)
+                .keyword(keyword)
+                .filterType(filterType)
+                .active(active)
+                .vacation(vacation)
+                .vacationResponse(vacationResponse)
+                .registrationDate(registrationDate)
+                .build();
+
+        return build;
+    }
 }
