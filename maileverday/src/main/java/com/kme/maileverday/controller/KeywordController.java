@@ -35,7 +35,7 @@ public class KeywordController {
     private String newkeyword1(HttpSession session, String keyword, String vacationres){
 
         keywordService.createKeyword(session, keyword, vacationres);
-        return "keywordHome";
+        return "redirect:/mykeyword";
     }
 
 
