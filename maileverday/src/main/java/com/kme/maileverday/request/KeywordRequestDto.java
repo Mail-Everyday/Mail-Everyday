@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @Builder
 public class KeywordRequestDto {
 
+    private Long id;
+
     private UserEmail email;
 
     private String keyword;
@@ -31,6 +33,7 @@ public class KeywordRequestDto {
 
     public UserKeyword toEntity(){
         UserKeyword build = UserKeyword.builder()
+                .id(id)
                 .email(email)
                 .keyword(keyword)
                 .filterType(filterType)

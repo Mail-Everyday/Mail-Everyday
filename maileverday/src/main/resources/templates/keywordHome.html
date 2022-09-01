@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-
+<div>
+    <h1><a href="/">Mail Everyday</a></h1>
+</div>
 <div class="container">
     <div>
         <table>
@@ -23,6 +25,17 @@
                 <td th:text="${keywordList.vacation}"></td>
                 <td th:text="${keywordList.vacationResponse}"></td>
                 <td th:text="${keywordList.filterType}"></td>
+                <td>
+                    <a th:href="@{'/keyword/edit/' + ${keywordList.id}}">
+                        <button>수정</button>
+                    </a>
+                </td>
+                <td>
+                    <form id="delete-form" th:action="@{'/delete/' + ${keywordList.id}}" method="post">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button id="delete-btn">삭제</button>
+                    </form>
+                </td>
             </tr>
             </tbody>
         </table>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div>
+    <h1><a href="/">Mail Everyday</a></h1>
+</div>
+<form th:action="@{'/keyword/edit/' + ${keywordDto.id}}" method="post">
+    <input type="hidden" name="_method" value="put"/>
+<!--    <input type="hidden" name="id" th:value="${keywordDto.id}"/>-->
+
+    활성화 : <label><input type="radio" name="active" value="true"> 활성 </label>
+    <label><input type="radio" name="active" value="false"> 비활성</label><br>
+    키워드 : <input type="text" name="keyword" th:value="${keywordDto.keyword}"> <br>
+    휴가여부 : <label><input type="radio" name="vacation" value="true"> 휴가중 </label>
+    <label><input type="radio" name="vacation" value="false"> 비휴가</label><br>
+    부재시 응답문자 : <input type="text" name="vacationResponse" th:value="${keywordDto.vacationResponse}"> <br>
+    <!--    작성자 : <input type="text" name="writer" th:value="${boardDto.writer}"> <br>-->
+
+    <input type="submit" value="수정">
+</form>
+
+</body>
+</html>
